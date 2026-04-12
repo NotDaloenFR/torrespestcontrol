@@ -1,6 +1,4 @@
-// MEMBER ___ - Overdue Alerts
-// Props received from App.js: appointments (array)
-//
+
 // WHAT THIS PAGE SHOULD DO:
 // - Find all appointments where:
 //     * status is still "Pending" OR "In Progress"
