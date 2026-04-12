@@ -7,6 +7,9 @@ import AppointmentList from "./pages/AppointmentList";
 import CreateAppointment from "./pages/CreateAppointment";
 import EditAppointment from "./pages/EditAppointment";
 import AppointmentDetail from "./pages/AppointmentDetail";
+import TechnicianTracker from "./pages/TechnicianTracker";
+import OverdueAlerts from "./pages/OverdueAlerts";
+import ClientHistory from "./pages/ClientHistory";
 import { mockAppointments } from "./data/mockData";
 
 function App() {
@@ -45,6 +48,9 @@ function App() {
             <Route path="/appointments/create" element={<CreateAppointment onAdd={addAppointment} />} />
             <Route path="/appointments/edit/:id" element={<EditAppointment appointments={appointments} onUpdate={updateAppointment} />} />
             <Route path="/appointments/:id" element={<AppointmentDetail appointments={appointments} />} />
+            <Route path="/technicians" element={<TechnicianTracker appointments={appointments} />} />
+            <Route path="/overdue" element={<OverdueAlerts appointments={appointments} />} />
+            <Route path="/client-history" element={<ClientHistory appointments={appointments} />} />
           </Routes>
         </div>
       </div>
