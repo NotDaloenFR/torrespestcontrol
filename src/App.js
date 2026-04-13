@@ -36,12 +36,19 @@ function App() {
     localStorage.setItem("appointments", JSON.stringify(updated));
   };
 
+  // Calculate follow-up count here so Header can use it
+  const followUpCount = appointments.filter(a => {
+    if (a.status !== "Completed") return false;
+    const diff = (new Date() - new Date(a.date)) / (1000 * 60 * 60 * 24);
+    return diff >= 5 && diff <= 7;
+  }).length;
+
   return (
     <Router>
       <div style={{ display: "flex", minHeight: "100vh", width: "100%" }}>
         <Sidebar />
         <div className="page-wrapper">
-          <Header />
+          <Header followUpCount={followUpCount} />
           <Routes>
             <Route path="/" element={<Dashboard appointments={appointments} />} />
             <Route path="/appointments" element={<AppointmentList appointments={appointments} onDelete={deleteAppointment} />} />
