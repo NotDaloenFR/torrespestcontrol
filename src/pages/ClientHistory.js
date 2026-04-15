@@ -29,7 +29,86 @@ function ClientHistory({ appointments }) {
   // - Most recent appointment date
   // - Most common pest/service type
 
+  // Total visits for matched client
+const totalVisits = displayAppointments.length;
+
+// Most recent appointment date
+const lastVisit = displayAppointments.length > 0
+  ? displayAppointments.sort((a, b) => new Date(b.date) - new Date(a.date))[0].date
+  : null;
+
+// Most common pest/service type
+const serviceCount = {};
+displayAppointments.forEach(a => {
+  const s = a.pestType || a.serviceType || "Other";
+  serviceCount[s] = (serviceCount[s] || 0) + 1;
+});
+const mostCommonService = Object.entries(serviceCount).sort((a, b) => b[1] - a[1])[0]?.[0] || "—";
+
   // Step 4: Return JSX with search input and results
+  {/* SUMMARY CARD */}
+{shouldShowResults && displayAppointments.length > 0 && (
+  <div className="dashboard-card" style={{ marginBottom: "1rem", padding: "1.25rem 1.5rem" }}>
+    <div style={{ display: "flex", gap: "2rem" }}>
+      <div>
+        <div style={{ fontSize: "11px", color: "var(--muted-foreground)", fontWeight: 700, textTransform: "uppercase" }}>Total Visits</div>
+        <div style={{ fontSize: "24px", fontWeight: 800 }}>{totalVisits}</div>
+      </div>
+      <div>
+        <div style={{ fontSize: "11px", color: "var(--muted-foreground)", fontWeight: 700, textTransform: "uppercase" }}>Last Visit</div>
+        <div style={{ fontSize: "24px", fontWeight: 800 }}>
+          {new Date(lastVisit).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+        </div>
+      </div>
+      <div>
+        <div style={{ fontSize: "11px", color: "var(--muted-foreground)", fontWeight: 700, textTransform: "uppercase" }}>Most Common Service</div>
+        <div style={{ fontSize: "24px", fontWeight: 800 }}>{mostCommonService}</div>
+      </div>
+    </div>
+  </div>
+)}
+
+{/* RESULTS TABLE */}
+{shouldShowResults && (
+  <div className="dashboard-card">
+    {displayAppointments.length > 0 ? (
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Service</th>
+            <th>Technician</th>
+            <th>Status</th>
+            <th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {displayAppointments.map(a => (
+            <tr key={a.id}>
+              <td>{new Date(a.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</td>
+              <td>{a.pestType || a.serviceType}</td>
+              <td>{a.technician || "—"}</td>
+              <td><span className={`badge badge-${a.status.toLowerCase().replace(" ", "")}`}>{a.status}</span></td>
+              <td style={{ color: "var(--muted-foreground)" }}>{a.notes || "—"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    ) : (
+      <div className="empty-state">
+        <p style={{ fontWeight: 600, marginBottom: "4px" }}>No client found</p>
+        <p>Try searching with a different name</p>
+      </div>
+    )}
+  </div>
+)}
+
+{/* PROMPT WHEN SEARCH IS TOO SHORT */}
+{!shouldShowResults && search.length > 0 && (
+  <div className="empty-state">
+    <p>Keep typing to search...</p>
+  </div>
+)}
 
   return (
     <div className="list-page">
